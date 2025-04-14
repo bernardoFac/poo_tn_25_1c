@@ -3,7 +3,7 @@ package calculadoraAvanzada;
 
 import calculadoraSimple.Calculadora;
 
-public class Compleja extends Calculadora {
+public class CalculadoraCompleja extends Calculadora {
     public int potencia(int base,int exponente){
         return (int) Math.pow(base,exponente);
     }
