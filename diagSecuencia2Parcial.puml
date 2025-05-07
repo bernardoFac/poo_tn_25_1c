@@ -1,0 +1,14 @@
+@startuml
+actor "Usuario"
+participant "Plataforma"
+participant "Jugador"
+
+"Usuario"->"Plataforma": calcularMetricaPersonalizada(Jugador.id)
+activate "Plataforma"
+"Plataforma"->"Jugador":datosJugador(id):rendimientoSesionesFinalizadas
+activate "Jugador"
+"Jugador"->"Plataforma": rendimientoSesionesFinalizadas <list>
+deactivate "Jugador"
+"Plataforma"->"Plataforma": metrica= sum(rendimientoSesionesFinalizadas)/len(rendimientoSesionesFinalizadas)
+"Plataforma"-> "Usuario": message("Tus metricas son", metrica)
+@enduml

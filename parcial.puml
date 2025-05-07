@@ -1,0 +1,67 @@
+@startuml
+Accion --|> VideoJuego
+Simulacion --|> VideoJuego
+Estrategia --|> VideoJuego
+Sesion --o Jugador
+Jugador --o VideoJuego
+Sesion --o VideoJuego
+
+Jugador --* Plataforma
+VideoJuego--* Plataforma
+
+class Plataforma{
+-jugadores:list<Jugador>
+-videojuegos:list<VideoJuego>
++buscarJuego(Videojuego)
++seleccionarJuego(Jugador.edad, VideoJuego.edadMinima)
++filtrar(VideoJuego.precio, VideoJuego.edadMinima, VideoJuego.genero)
++calcularMetricaPersonalizada(Jugador)
+}
+
+abstract class VideoJuego{
+-id:int
+-nombre:String
+-empresa:String
+-añoLanzamiento:int
+-edadMinima:int
+-genero:String
+-precio:double
+}
+class Estrategia{
+-logros:int
+-niveles:int
+-horasJugadas:int
++calculoRendimientoSesion(logros,niveles,horasJugadas)
+}
+class Accion{
+-logros:int
+-enemigosTotal:int
+-horasJugadas:int
++calculoRendimientoSesion(logros,enemigosTotal,horasJugadas)
+}
+class Simulacion{
+-logros:int
+-horasJugadas:int
++calculoRendimientoSesion(logros,horasJugadas)
+}
+class Jugador{
+-id:int
+-edad:int
+-sesionesIniciadas:int
+-sesionesFinalizadas:int
+-rendimientoSesionesFinalizadas:list<Sesion>
++iniciarSesion(sesionesIniciadas:int, sesionesFinalizadas:int)
+}
+class Sesion{
+-id:int
+-jugador:Jugador
+-juego:VideoJuego
+-logrosCompletados:int
+-horasJugadas:int
+-tiempoTotalJuego:int
+-dificultad:int
+-sesionFinalizada:Boolean
++finalizarSesion(juego:VideoJuego, logrosCompletados:int, horasJugadas:int, tiempoTotalJuego:int, dificultad:int)
+}
+
+@enduml
