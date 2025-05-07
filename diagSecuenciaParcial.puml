@@ -1,0 +1,27 @@
+@startuml
+actor "Usuario"
+participant "Plataforma"
+participant "Videojuego"
+participant "Sesion"
+
+"Usuario" -> "Plataforma": iniciarSesion(Jugador.id, Videojuego.id)
+activate "Plataforma"
+"Plataforma"->"Jugador": datosJugador():sesionesIniciadas, sesionesFinalizadas, edad
+activate "Jugador"
+"Jugador"->"Plataforma":sesionesIniciadas, sesionesFinalizadas, edad
+deactivate "Jugador"
+alt sesionesIniciadas- sesionesFinalizadas<2
+"Plataforma"->"Videojuego": datosVideojuego():edadMinima
+activate "Videojuego"
+"Videojuego"-> "Plataforma": edadMinima
+deactivate "Videojuego"
+alt edad => edadMinima
+"Plataforma"->"Jugador": iniciarSesion()
+"Plataforma"->"Usuario":message "Se pudo iniciar sesion"
+else
+"Plataforma"-> "Usuario":exceptionMessage"El jugador no tiene la edad necesaria"
+end
+else
+"Plataforma"-> "Usuario":exceptionMessage"El jugador tiene 2 sesiones iniciadas"
+end
+@enduml
