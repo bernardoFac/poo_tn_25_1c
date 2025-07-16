@@ -1,0 +1,15 @@
+@startuml
+actor "Usuario"
+participant "SistemaSubte"
+participant "VagonArgentino"
+
+"Usuario" ->"SistemaSubte": agregarVagonArgentino(String nombreLinea)void
+activate "SistemaSubte"
+"SistemaSubte"-> "SistemaSubte": agregarVagonLinea(nombre, new VagonArgentino())
+"SistemaSubte" -> "VagonArgentino": VagonArgentino(String nombre)
+deactivate "SistemaSubte"
+activate "VagonArgentino"
+"VagonArgentino"->"VagonArgentino":super(25)
+
+
+@enduml

@@ -1,0 +1,82 @@
+@startuml
+class SistemaSubte{
+-lineaSubte:List<LineaSubte>;
+-estaciones:List<Estacion>;
+-static sistemaSubte:SistemaSubte;
+
+-SistemaSubte();
++static getInstance()SistemaSubte;
++agregarEstacionLinea(String nombreEstacion, String nombreLinea)void;
++crearEstacion(String nombre, int capacidad)
++crearLineaSubte(String nombre)void;
++contarVagonesCompatibles(Vagon vagon)int;
++agregarVagonArgentino(String nombre)void;
++agregarVagonAleman(String nombre)void;
++agregarVagonChino(String nombre)void;
+-agregarVagonLinea(String nombre, Vagon vagon)void;
+-buscarLinea(String nombre)LineaSubte;
+}
+class Estacion{
+-capacidadMaxima:int;
+-nombre:String;
+-lineas:List<LineaSubte>
+
++Estacion(String nombre, int capacidadMaxima);
++getNombre()String;
++agregarLinea(LineaSubte linea)void;
++superaLaCapacidad(int capacidad)boolean;
++sosEstacion(String nombre)boolean;
+}
+class LineaSubte{
+-nombre:String;
+-vagones:List<Vagon>
+-estaciones:List<Estacion>
+
++LineaSubte(String nombre)
++agregarVagon(Vagon vagon)boolean;
++superaMaximoEstacion(Vagon vagon)boolean;
++esCompatibleConVagones(Vagon vagon)boolean;
++getPrimerVagon()Vagon;
++getCapacidadTotal()int;
++contarVagonesCompatibles(Vagon vagon)int;
++agregarEstacion(Estacion estacion)void;
++getNombre()String;
++getVagones()List<Vagon>;
++sosLinea(String nombre)boolean;
+}
+class Vagon{
+-capacidad:int;
+-Vagon(int capacidad);
++public velocidadMaxima()double;
++sosAleman()boolean;
++sosArgentino()boolean;
++sosChino()boolean;
++abstract somosCompatibles(Vagon vagon)boolean;
++getCapacidad()int;
+}
+class VagonAleman{
++VagonAleman();
++sosAleman()boolean;
++somosCompatibles(Vagon vagon)boolean;
+}
+class VagonChino{
++VagonChino();
++sosChino()boolean;
++somosCompatibles(Vagon vagon)boolean;
+}
+class VagonArgentino{
++VagonArgentino();
++sosArgentino()boolean;
++somosCompatibles(Vagon vagon)boolean;
+}
+
+VagonArgentino--|>Vagon
+VagonAleman--|>Vagon
+VagonChino--|>Vagon
+
+Vagon "1..*"--o  "1"LineaSubte
+LineaSubte "1..*" o--o "1..*" Estacion
+
+SistemaSubte  *-- "1..*" Estacion
+SistemaSubte  *-- "1..*" LineaSubte
+@enduml
