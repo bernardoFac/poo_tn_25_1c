@@ -1,0 +1,48 @@
+@startuml
+actor Usuario
+participant PlataformaStreaming as PS
+participant Usuario       as U
+participant Perfil        as P
+participant Pelicula      as M
+participant Dispositivo   as D
+participant Reproduccion  as R
+
+Usuario -> PS : iniciarReproduccion(int idUsuario,String nombrePerfil,int idPelicula,\n dispositivoIP)
+activate PS
+PS -> PS : buscarUsuario(int idUsuario)
+PS -> U  : getPerfil(String nombrePerfil)
+activate U
+U --> PS  : Perfil perfil
+deactivate U
+
+PS -> PS : buscarPelicula(int idPelicula)
+PS -> U : buscarDispositivo(int dispositivoIp)
+activate U
+U->U: getDispositivo(int dispositivoIp)
+alt dispositivo existe
+    U --> PS  : Dispositivo dispositivo
+    deactivate U
+else dispositivo nuevo
+    PS -> D : crearDispositivo(int ip)
+    activate D
+    D -> D  : Dispositivo(int ip)
+    D->U: agregarDispositivo(Dispositivo dispositivo)
+    activate U
+    deactivate D
+    U-->PS: Dispositivo dispositivo
+    deactivate U
+end
+
+PS -> P : iniciarReproduccion(Pelicula pelicula, Dispositivo dispositivo)
+activate P
+P -> R : Reproduccion(Pelicula pelicula, Dispositivo dispositivo)
+activate R
+R --> P: Reproduccion reproduccion
+P->P: historial.add(Reproduccion reproduccion)
+deactivate R
+P-->PS: Reproduccion reproduccion
+PS --> Usuario : Reproduccion reproduccion
+deactivate P
+
+deactivate PS
+@enduml
