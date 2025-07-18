@@ -40,6 +40,7 @@ class Perfil {
   + Perfil(id: int, nombre: String)
   + agregarAFavorito(pelicula: Pelicula): void
   + verHistorial(): List<Reproduccion>
+  +agregarAHistorial(Reproduccion reproduccion):void
   + iniciarReproduccion(pelicula: Pelicula, dispositivo: Dispositivo): Reproduccion
   - contarReproducciones(): int
 }
@@ -58,7 +59,7 @@ class Reproduccion {
   + Reproduccion(pelicula: Pelicula, dispositivo: Dispositivo, fechaHora: DateTime, perfil: Perfil)
 }
 Usuario "1" *-- "0..*" Perfil
-Usuario "1" --o "0..*" Dispositivo
+Usuario "1" o-- "0..*" Dispositivo
 Perfil "1" o-- "0..*" Pelicula
 Perfil "1" --o "1" Reproduccion
 Reproduccion "0..*" o-- "1" Pelicula
@@ -80,7 +81,6 @@ class PlataformaStreaming {
 
 PlataformaStreaming "1" *-- "0..*" Usuario
 PlataformaStreaming "1" *-- "0..*" Pelicula
-PlataformaStreaming "1" *-- "0..*" Dispositivo
 
 
 @enduml

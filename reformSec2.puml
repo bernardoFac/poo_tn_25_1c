@@ -4,34 +4,26 @@ participant PlataformaStreaming as PS
 participant UsuarioObjeto       as U
 participant Perfil           as P
 
-Usuario -> PS : calcularCosto(int idUsuario)
+Usuario -> PS : calcularCosto(int idUsuario):float
 activate PS
-
-loop
-  PS -> PS : buscarUsuario(int idUsuario)
-end
+PS -> PS : buscarUsuario(int idUsuario):Usuario
 alt usuario existe
-  PS -> U : calcularCosto()float
+  PS -> U : calcularCosto():float
   activate U
 
-  U -> U : cantidadPerfiles()int
-  U --> U : nPerfiles
-
-  U -> U : cantidadDispositivos()int
-  U --> U : nDispositivos
-
-  loop por cada perfil in listaPerfiles
+  U -> U : getPerfiles():list<Perfil>
+  U -> U : getDispositivos():list<Dispositivo>
+  loop por cada perfil existente en listaPerfiles
     U -> P : cantidadReproducciones()
     activate P
     P --> U : int totalReproducciones  += int repro_i
     deactivate P
   end
-
-  U -> U : calcularCosto(nPerfiles, nDispositivos, totalReproducciones)
-  U --> PS : costo float
+  U -> U : calcularCosto(list<Perfil>, list<Dispositivo>, totalReproducciones): float
+  U --> PS : float costo
   deactivate U
 
-  PS --> Usuario : ("El costo de este usuario es de " costo float)
+  PS --> Usuario : float costo
 else usuario no existe
   PS --> Usuario : exceptionMessage("Usuario no encontrado")
 end
