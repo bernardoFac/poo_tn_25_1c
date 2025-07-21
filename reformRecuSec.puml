@@ -1,0 +1,51 @@
+@startuml
+actor Usuario
+participant PlataformaStreaming as PS
+participant Usuario       as U
+participant Perfil        as P
+participant Pelicula      as M
+participant Reproduccion  as R
+
+Usuario -> PS : iniciarReproduccion(int idUsuario,String nombrePerfil,int idPelicula,int dispositivoIP)
+activate PS
+PS -> PS : buscarPelicula(int idUsuario)
+alt pelicula no existe
+PS-->Usuario: ExpectionMessage("Pelicula no encontrada")
+else
+PS -> PS : buscarUsuario(int idUsuario)
+alt usuario no existe
+PS-->Usuario: ExpectionMessage("Usuario no encontrado")
+else
+activate U
+PS -> U : iniciarReproduccion(String nombrePerfil,Pelicula pelicula,int dispositivoIP)
+deactivate PS
+U -> U: buscarPerfil(String nombrePerfil)
+alt perfil no existe
+activate PS
+U -->PS: None
+PS --> Usuario:ExceptionMessage("El perfil indicado no existe")
+else
+deactivate PS
+    U-> U : buscarDispositivo(int dispositivoIp)
+
+alt dispositivo existe
+U -> P : iniciarReproduccion(Pelicula pelicula, Dispositivo dispositivo)
+activate P
+else dispositivo nuevo
+U->U: crearDispositivo(int dispositivoIp)
+U -> P : iniciarReproduccion(Pelicula pelicula, Dispositivo dispositivo)
+activate R
+end
+P->R: Reproduccion(pelicula: Pelicula, dispositivo: Dispositivo, fechaHora: DateTime, perfil: Perfil)
+R --> P: Reproduccion reproduccion
+deactivate R
+P->P: agregarAHistorial(Reproduccion reproduccion)
+P-->PS: Reproduccion reproduccion
+activate PS
+PS --> Usuario : Reproduccion reproduccion
+deactivate P
+deactivate PS
+end
+end
+end
+@enduml
