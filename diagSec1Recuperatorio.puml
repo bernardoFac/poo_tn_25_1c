@@ -1,0 +1,43 @@
+@startuml
+actor Usuario
+participant PlataformaStreaming as PS
+participant Usuario       as U
+participant Perfil        as P
+participant Pelicula      as M
+participant Dispositivo   as D
+participant Reproduccion  as R
+
+Usuario -> PS : iniciarReproduccion(\n idUsuario,\n nombrePerfil,\n idPelicula,\n dispositivoIP)
+activate PS
+
+
+PS -> PS : buscarUsuario(idUsuario)
+PS-->U: usuario
+PS -> U  : getPerfil(nombrePerfil)
+activate U
+U --> PS  : perfil
+deactivate U
+
+PS -> PS : buscarPelicula(idPelicula)
+PS--> P: pelicula
+PS -> PS : buscarDispositivo(dispositivoIP)
+alt dispositivo existe
+    PS --> D  : dispositivo
+else dispositivo nuevo
+    PS -> PS : crear Dispositivo(ip)
+    PS --> D  : dispositivo
+    PS -> U  : agregarDispositivo(dispositivo)
+    activate U
+    deactivate U
+end
+
+PS -> P : iniciarReproduccion(pelicula, dispositivo)
+activate P
+P --> R : nuevaReproduccion
+deactivate P
+
+PS -> P : historial.add(reproduccion)
+
+PS --> Usuario : Reproduccion reproduccion
+deactivate PS
+@enduml
