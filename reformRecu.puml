@@ -70,7 +70,7 @@ Perfil "1" *-- "0..*" Reproduccion
 class PlataformaStreaming {
   - usuarios: List<Usuario>
   - peliculas: List<Pelicula>
-  + Sistema()
+  + PlataformaStreaming()
   + agregarUsuario(idUsuario: int): Usuario
   + agregarPelicula(pelicula: Pelicula): void
   + agregarDispositivo(dispositivo: Dispositivo): void

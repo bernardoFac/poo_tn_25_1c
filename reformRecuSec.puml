@@ -6,42 +6,41 @@ participant Perfil        as P
 participant Pelicula      as M
 participant Reproduccion  as R
 
-Usuario -> PS : iniciarReproduccion(int idUsuario,String nombrePerfil,int idPelicula,int dispositivoIP)
+Usuario -> PS : iniciarReproduccion(int idUsuario,String nombrePerfil,int idPelicula,int dispositivoIP):Reproduccion
 activate PS
-PS -> PS : buscarPelicula(int idUsuario)
+PS -> PS : buscarPelicula(int idPelicula):Pelicula
 alt pelicula no existe
 PS-->Usuario: ExpectionMessage("Pelicula no encontrada")
 else
-PS -> PS : buscarUsuario(int idUsuario)
+PS -> PS : buscarUsuario(int idUsuario):Usuario
 alt usuario no existe
 PS-->Usuario: ExpectionMessage("Usuario no encontrado")
 else
 activate U
-PS -> U : iniciarReproduccion(String nombrePerfil,Pelicula pelicula,int dispositivoIP)
-deactivate PS
-U -> U: buscarPerfil(String nombrePerfil)
+PS -> U : iniciarReproduccion(String nombrePerfil,Pelicula pelicula,int dispositivoIP):Reproduccion
+
+U -> U: buscarPerfil(String nombrePerfil):  Perfil
 alt perfil no existe
-activate PS
-U -->PS: None
+
+U -->PS: ExceptionMessage("El perfil indicado no existe")
 PS --> Usuario:ExceptionMessage("El perfil indicado no existe")
 else
-deactivate PS
-    U-> U : buscarDispositivo(int dispositivoIp)
+    U-> U : buscarDispositivo(int dispositivoIp):Dispositivo
 
 alt dispositivo existe
 U -> P : iniciarReproduccion(Pelicula pelicula, Dispositivo dispositivo)
 activate P
 else dispositivo nuevo
-U->U: crearDispositivo(int dispositivoIp)
+U->U: crearDispositivo(int dispositivoIp):Dispositivo
 U -> P : iniciarReproduccion(Pelicula pelicula, Dispositivo dispositivo)
 activate R
 end
-P->R: Reproduccion(pelicula: Pelicula, dispositivo: Dispositivo, fechaHora: DateTime, perfil: Perfil)
+deactivate U
+P->R: Reproduccion(pelicula: Pelicula, dispositivo: Dispositivo, fechaHora: DateTime, perfil: Perfil):Reproduccion
 R --> P: Reproduccion reproduccion
 deactivate R
 P->P: agregarAHistorial(Reproduccion reproduccion)
 P-->PS: Reproduccion reproduccion
-activate PS
 PS --> Usuario : Reproduccion reproduccion
 deactivate P
 deactivate PS

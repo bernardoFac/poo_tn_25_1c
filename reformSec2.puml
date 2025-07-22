@@ -6,19 +6,19 @@ participant Perfil           as P
 
 Usuario -> PS : calcularCosto(int idUsuario):float
 activate PS
-activate PS
-PS -> PS : buscarUsuario(int idUsuario):Usuario'
+
+PS -> PS : buscarUsuario(int idUsuario):Usuario
 loop por cada usuario
+activate PS
 PS->U: sosUsuario(int idUsuario):boolean
 U-->PS: boolean
 end
-PS->PS: usuario
+PS-->PS: usuario
 deactivate PS
 
 alt usuario encontrado
   PS -> U : calcularCosto():float
   activate U
-  deactivate PS
 
   U -> U : getPerfiles():list<Perfil>
   U -> U : getDispositivos():list<Dispositivo>
@@ -28,10 +28,9 @@ alt usuario encontrado
     P --> U : int totalReproducciones  += int repro_i
     deactivate P
   end
-  U -> U : calcularCosto(list<Perfil>, list<Dispositivo>, totalReproducciones): float
+  U -> U : calcularCosto(int cantidadPerfiles, int cantidadDispositivos, int totalReproducciones): float
   U --> PS : float costo
   deactivate U
-  activate PS
   PS --> Usuario : float costo
 else usuario no encontrado
   PS --> Usuario : exceptionMessage("Usuario no encontrado")
