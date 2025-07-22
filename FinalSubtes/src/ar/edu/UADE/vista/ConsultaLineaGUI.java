@@ -1,25 +1,24 @@
 package ar.edu.UADE.vista;
 
+import ar.edu.UADE.controladores.Principal;
+import ar.edu.UADE.excepciones.LineaException;
+
 import javax.swing.*;
 import java.awt.*;
 
-import ar.edu.UADE.controladores.SubteController;
-import ar.edu.UADE.controladores.SubteController.DatosLinea;
-import ar.edu.UADE.excepciones.LineaException;
-
 public class ConsultaLineaGUI extends JFrame {
 
-    private final JTextField txtBuscar  = new JTextField(15);
-    private final JLabel lblNombre      = new JLabel("―");
-    private final JLabel lblCapacidad   = new JLabel("―");
+    private final Principal controller;
+
+    private final JTextField txtBuscar    = new JTextField(15);
+    private final JLabel     lblNombre    = new JLabel("―");
+    private final JLabel     lblCapacidad = new JLabel("―");
     private final DefaultListModel<String> modeloLista = new DefaultListModel<>();
-    private final JList<String> lstEstaciones = new JList<>(modeloLista);
+    private final JList<String>             lstEstaciones = new JList<>(modeloLista);
 
-    private final SubteController controller;
-
-    public ConsultaLineaGUI(SubteController controller) {
+    public ConsultaLineaGUI(Principal controller) {
         super("Consulta de Línea de Subte");
-        this.controller = controller;           // inyección del único controlador
+        this.controller = controller;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(480, 360);
         setLocationRelativeTo(null);
@@ -27,14 +26,12 @@ public class ConsultaLineaGUI extends JFrame {
     }
 
     private void construirUI() {
-        /* Panel de búsqueda */
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         top.add(new JLabel("Nombre Línea:"));
         top.add(txtBuscar);
         JButton btnBuscar = new JButton("Buscar");
         top.add(btnBuscar);
 
-        /* Datos */
         JPanel centro = new JPanel(new GridLayout(2, 2, 6, 6));
         centro.add(new JLabel("Línea:"));
         centro.add(lblNombre);
@@ -49,6 +46,7 @@ public class ConsultaLineaGUI extends JFrame {
         add(scroll, BorderLayout.SOUTH);
 
         btnBuscar.addActionListener(e -> buscar());
+        txtBuscar.addActionListener(e -> buscar());
     }
 
     private void buscar() {
@@ -59,11 +57,12 @@ public class ConsultaLineaGUI extends JFrame {
             return;
         }
         try {
-            DatosLinea dto = controller.consultarLinea(nombre);
-            lblNombre.setText(dto.nombre());
-            lblCapacidad.setText(String.valueOf(dto.capacidadTotal()));
+            Principal.DatosLinea dto = controller.consultarLinea(nombre);
+            lblNombre.setText(dto.getNombre());
+            lblCapacidad.setText(String.valueOf(dto.getCapacidadTotal()));
             modeloLista.clear();
-            dto.estaciones().forEach(modeloLista::addElement);
+            dto.getEstaciones().forEach(modeloLista::addElement);
+
         } catch (LineaException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(),
                     "Línea no encontrada", JOptionPane.ERROR_MESSAGE);

@@ -15,7 +15,7 @@ activate "SistemaSubte"
 activate "LineaSubte"
 "LineaSubte"-->"SistemaSubte":boolean
 deactivate "LineaSubte"
-"SistemaSubte"->"SistemaSubte":LineaSubte
+"SistemaSubte"-->"SistemaSubte":LineaSubte
 deactivate "SistemaSubte"
     alt encuentra linea
     "SistemaSubte"->"SistemaSubte":buscarEstacion(String nombreEstacion):Estacion
@@ -26,29 +26,38 @@ deactivate "SistemaSubte"
          activate "Estacion"
          "Estacion"-->"SistemaSubte":boolean
          deactivate "Estacion"
-         "SistemaSubte"->"SistemaSubte":Estacion
+         "SistemaSubte"-->"SistemaSubte":Estacion
 
          deactivate "SistemaSubte"
 
          alt encuentra estacion
            "SistemaSubte"->"LineaSubte":agregarEstacion(Estacion estacion):void
            activate "LineaSubte"
-           "LineaSubte"-->"LineaSubte":estaciones.add(Estacion estacion)
+           "LineaSubte"-->"LineaSubte":estaciones.add(estacion)
+
            "SistemaSubte"->"Estacion": agregarLinea(Linea linea):void
-           activate "Estacion"
            deactivate "LineaSubte"
+           activate "Estacion"
+
+
            "Estacion"->"Estacion":superaLaCapacidad():boolean
+           activate "Estacion"
            "Estacion"->"LineaSubte":getCapacidadTotal():int
            activate "LineaSubte"
            "LineaSubte"-->"Estacion":int
            deactivate "LineaSubte"
-           alt no supera la capacidad
-           "Estacion" --> "Estacion": false
-           "Estacion" -> "Estacion": lineas.add(linea)
-           else
+           alt supera la capacidad
+
            "Estacion" --> "Estacion": true
+           deactivate "Estacion"
            "Estacion"-->"SistemaSubte":ExceptionMessage("Se supera la capacidad de la linea")
+
            "SistemaSubte"-->"Usuario":ExceptionMessage("Se supera la capacidad de la linea")
+
+
+           else no supera la capacidad
+           "Estacion" -> "Estacion": lineas.add(linea):
+
            end
            deactivate "Estacion"
          else no encuentra estacion
