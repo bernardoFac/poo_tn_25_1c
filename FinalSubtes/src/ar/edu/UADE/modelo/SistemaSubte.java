@@ -80,6 +80,7 @@ public class SistemaSubte {
 	public LineaSubte obtenerLinea(String nombre) throws LineaException {
 		return buscarLinea(nombre);
 	}
+	public List<Estacion> getEstaciones() { return new ArrayList<>(estaciones); }
 	private Estacion buscarEstacion(String nombre) throws EstacionException {
 		for(Estacion estacion:this.estaciones) {
 			if(estacion.sosEstacion(nombre)) {
