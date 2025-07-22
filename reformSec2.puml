@@ -1,0 +1,38 @@
+@startuml
+actor Usuario
+participant PlataformaStreaming as PS
+participant UsuarioObjeto       as U
+participant Perfil           as P
+
+Usuario -> PS : calcularCosto(int idUsuario):float
+activate PS
+
+PS -> PS : buscarUsuario(int idUsuario):Usuario
+loop por cada usuario
+activate PS
+PS->U: sosUsuario(int idUsuario):boolean
+U-->PS: boolean
+end
+PS-->PS: usuario
+deactivate PS
+
+alt usuario encontrado
+  PS -> U : calcularCosto():float
+  activate U
+
+  U -> U : getPerfiles():list<Perfil>
+  U -> U : getDispositivos():list<Dispositivo>
+  loop por cada perfil
+    U -> P : cantidadReproducciones()
+    activate P
+    P --> U : int totalReproducciones  += int repro_i
+    deactivate P
+  end
+  U -> U : calcularCosto(int cantidadPerfiles, int cantidadDispositivos, int totalReproducciones): float
+  U --> PS : float costo
+  deactivate U
+  PS --> Usuario : float costo
+else usuario no encontrado
+  PS --> Usuario : exceptionMessage("Usuario no encontrado")
+end
+@enduml
