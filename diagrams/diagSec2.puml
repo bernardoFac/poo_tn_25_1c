@@ -1,0 +1,72 @@
+@startuml
+actor "Usuario"
+participant "SistemaSubte"
+participant "Estacion"
+participant "LineaSubte"
+
+
+
+"Usuario"->"SistemaSubte": agregarEstacionLinea(String nombreEstacion, String nombreLinea):void
+activate "SistemaSubte"
+"SistemaSubte"->"SistemaSubte":buscarLinea(String nombreLinea):LineaSubte
+loop por cada linea
+"SistemaSubte"->"LineaSubte":sosLinea(String nombreLinea):boolean
+activate "SistemaSubte"
+activate "LineaSubte"
+"LineaSubte"-->"SistemaSubte":boolean
+deactivate "LineaSubte"
+"SistemaSubte"-->"SistemaSubte":LineaSubte
+deactivate "SistemaSubte"
+    alt encuentra linea
+    "SistemaSubte"->"SistemaSubte":buscarEstacion(String nombreEstacion):Estacion
+     loop por cada estacion
+
+         "SistemaSubte"->"Estacion":sosEstacion(String nombreEstacion):boolean
+         activate "SistemaSubte"
+         activate "Estacion"
+         "Estacion"-->"SistemaSubte":boolean
+         deactivate "Estacion"
+         "SistemaSubte"-->"SistemaSubte":Estacion
+
+         deactivate "SistemaSubte"
+
+         alt encuentra estacion
+           "SistemaSubte"->"LineaSubte":agregarEstacion(Estacion estacion):void
+           activate "LineaSubte"
+           "LineaSubte"-->"LineaSubte":estaciones.add(estacion)
+
+           "SistemaSubte"->"Estacion": agregarLinea(Linea linea):void
+           deactivate "LineaSubte"
+           activate "Estacion"
+
+
+           "Estacion"->"Estacion":superaLaCapacidad():boolean
+           activate "Estacion"
+           "Estacion"->"LineaSubte":getCapacidadTotal():int
+           activate "LineaSubte"
+           "LineaSubte"-->"Estacion":int
+           deactivate "LineaSubte"
+           alt supera la capacidad
+
+           "Estacion" --> "Estacion": true
+           deactivate "Estacion"
+           "Estacion"-->"SistemaSubte":ExceptionMessage("Se supera la capacidad de la linea")
+
+           "SistemaSubte"-->"Usuario":ExceptionMessage("Se supera la capacidad de la linea")
+
+
+           else no supera la capacidad
+           "Estacion" -> "Estacion": lineas.add(linea):
+
+           end
+           deactivate "Estacion"
+         else no encuentra estacion
+            "SistemaSubte"--> "Usuario":ExceptionMessage("Estacion no encontrada");
+         end
+     end
+    else no encuentra linea
+    "SistemaSubte"--> "Usuario":ExceptionMessage("Linea no encontrada");
+    end
+end
+
+@enduml
